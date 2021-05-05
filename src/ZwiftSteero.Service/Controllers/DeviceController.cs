@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ZwiftSteero.Service.Models;
@@ -7,20 +7,20 @@ namespace ZwiftSteero.Service.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PingController : ControllerBase
+    public class DeviceController : ControllerBase
     {
 
         private readonly ILogger<PingController> _logger;
 
-        public PingController(ILogger<PingController> logger)
+        public DeviceController(ILogger<PingController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet]
-        public ActionResult<Ping> Get()
+        public ActionResult<Device> Get()
         {
-            return Ok(new Ping(){Processed = DateTime.UtcNow});
+            return Ok(new Device());
         }
     }
 }
