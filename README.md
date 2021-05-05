@@ -1,2 +1,4 @@
 # ZwiftSteeroApi
-Restful steering API for Zwift
+WIP
+Restful API to control steering on Zwift
+
