@@ -1,7 +1,7 @@
 # ZwiftSteeroApi
 # WIP
 Restful API to control steering on Zwift
-* Peripheral hardware using [BleuIo Bluetooth USB Adapter] (https://www.bleuio.com/)
-* Bridge from a gamepad using a mapper such as AntiMicro
+* Uses Peripheral hardware [BleuIo Bluetooth USB Adapter](https://www.bleuio.com/)
+* Integation plan: bridge from a gamepad using a mapper such as AntiMicro
 
-Sterzo emultation based on ideas in https://github.com/stefaandesmet2003/ESP32Sterzo
+Sterzo emultation based on work in https://github.com/stefaandesmet2003/ESP32Sterzo
