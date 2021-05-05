@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/ZwiftSteero.Service/ZwiftSteero.Service.csproj",
+                "${workspaceFolder}/src/ZwiftSteero.Service/ZwiftSteero.Service.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/ZwiftSteero.Service/ZwiftSteero.Service.csproj",
+                "${workspaceFolder}/src/ZwiftSteero.Service/ZwiftSteero.Service.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/ZwiftSteero.Service/ZwiftSteero.Service.csproj",
+                "${workspaceFolder}/src/ZwiftSteero.Service/ZwiftSteero.Service.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
