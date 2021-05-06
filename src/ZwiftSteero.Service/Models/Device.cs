@@ -12,7 +12,7 @@ namespace ZwiftSteero.Service.Models
             }
         }
 
-        public string ComPort{ get; private set;}
+        public string Port{ get; set;}
 
         public ConnectionState State{get; set;}
     }

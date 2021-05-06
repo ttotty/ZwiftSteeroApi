@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zwiftsteero.service", "zwiftsteero.service\zwiftsteero.service.csproj", "{4F5A9A37-1E0C-439F-AD0E-4A809C95D445}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZwiftSteero.BleuDevice", "ZwiftSteero.BleuDevice\ZwiftSteero.BleuDevice.csproj", "{48556620-8E18-4FF0-924D-0CE9045B7D72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZwiftSteero.BleUDevice", "ZwiftSteero.BleUDevice\ZwiftSteero.BleUDevice.csproj", "{48556620-8E18-4FF0-924D-0CE9045B7D72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

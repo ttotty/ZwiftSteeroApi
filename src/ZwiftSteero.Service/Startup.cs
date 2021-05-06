@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using ZwiftSteero.BleUDevice;
 
 namespace ZwiftSteero.Service
 {
@@ -32,6 +33,9 @@ namespace ZwiftSteero.Service
                     options.JsonSerializerOptions.WriteIndented = true;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+
+            services.Add(new ServiceDescriptor(typeof(IPortInfo), typeof(PortInfo), ServiceLifetime.Transient));    // Scoped
+            
         
             services.AddSwaggerGen(c =>
             {

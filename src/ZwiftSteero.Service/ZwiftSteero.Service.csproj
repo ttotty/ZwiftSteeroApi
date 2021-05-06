@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <ProjectReference Include="..\ZwiftSteero.BleuDevice\ZwiftSteero.BleuDevice.csproj" />
+    <ProjectReference Include="..\ZwiftSteero.BleUDevice\ZwiftSteero.BleUDevice.csproj" />
   </ItemGroup>
 
 </Project>
