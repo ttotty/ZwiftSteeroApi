@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using ZwiftSteero.Service.Models;
 
 namespace ZwiftSteero.Service.Controllers
@@ -10,9 +14,9 @@ namespace ZwiftSteero.Service.Controllers
     public class DeviceController : ControllerBase
     {
 
-        private readonly ILogger<PingController> _logger;
+        private readonly ILogger<DeviceController> _logger;
 
-        public DeviceController(ILogger<PingController> logger)
+        public DeviceController(ILogger<DeviceController> logger)
         {
             _logger = logger;
         }
