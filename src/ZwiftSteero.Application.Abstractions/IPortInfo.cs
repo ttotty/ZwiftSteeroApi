@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
-
-namespace ZwiftSteero.BleUDevice
+namespace ZwiftSteero.Application.Abstractions
 {
     public interface IPortInfo
     {
@@ -17,7 +15,9 @@ namespace ZwiftSteero.BleUDevice
         int ReadTimeout { get; set; }
 
         int WriteTimeout { get; set; }
-        
-        Task<IPortInfo[]> SearchForNewPortAsync(int timeout = 30000);
+
+        bool IsNew{get;}
+
+        bool Check();
     }
 }

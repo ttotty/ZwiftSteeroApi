@@ -1,15 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 using RJCP.IO.Ports;
+
+using ZwiftSteero.Application.Abstractions;
 
 namespace ZwiftSteero.BleUDevice
 {
     public class PortInfo: IPortInfo
     {
-        private const int DefaultSearchMilliseconds = 30000;
 
         public string Port{get;private set;}
         public string Description{get;set;}
@@ -29,7 +28,7 @@ namespace ZwiftSteero.BleUDevice
 
         private DateTime? LastSeenAt{get;set;}
 
-        private bool IsNewDevice
+        public bool IsNew
         {
             get
             {
@@ -39,11 +38,20 @@ namespace ZwiftSteero.BleUDevice
                     && (LastSeenAt.Value - FirstSeenAt).TotalSeconds > 15; 
             }
         }
-        public PortInfo()
+
+        public bool Check()
         {
-
+            try
+            {
+                SerialPortStream port = new SerialPortStream(Port);
+                LastSeenAt = DateTime.UtcNow;
+            }
+            catch
+            {
+                LastSeenAt = null;
+            }
+            return LastSeenAt.HasValue;
         }
-
 
         public PortInfo(string portName)
         {
@@ -55,57 +63,7 @@ namespace ZwiftSteero.BleUDevice
             Description = SerialPortStream.GetPortDescriptions().First(p => p.Port == portName).Description;
             ReadTimeout = port.ReadTimeout;
             WriteTimeout = port.WriteTimeout;
-            FirstSeenAt = DateTime.Now;
+            FirstSeenAt = DateTime.UtcNow;
         }
-
-        public async Task<IPortInfo[]> SearchForNewPortAsync(int timeout = DefaultSearchMilliseconds)
-        {
-            DateTime stopLookingAt = DateTime.Now.AddMilliseconds(timeout);
-            List<PortInfo> originalPorts = ListPorts();
-            var recentPorts = new Dictionary<string, PortInfo>();
-            while(stopLookingAt >= DateTime.Now
-                  && (recentPorts.Values.Any(port => port.IsNewDevice) == false) )
-            {
-                const int MillisecondsDelay = 500;
-
-                IEnumerable<PortInfo> justAdded = ListPorts().Where(existingPort => originalPorts.All(newPort => newPort.Port != existingPort.Port));              
-                DateTime lastSeenAt = DateTime.Now;
-
-                foreach(PortInfo newPort in justAdded)
-                {
-                    if(recentPorts.ContainsKey(newPort.Port))
-                    {
-                        recentPorts[newPort.Port].LastSeenAt = lastSeenAt;
-
-                    }
-                    else
-                    {
-                        recentPorts.Add(newPort.Port, newPort);
-                    }
-                }
-
-                await Task.Delay(MillisecondsDelay);
-            }
-            return recentPorts.Values.Where(port => port.IsNewDevice).ToArray();
-        }
-
-        private List<PortInfo> ListPorts()
-        {
-            var ports = new List<PortInfo>();
-            foreach (string port in SerialPortStream.GetPortNames()) 
-            {
-                try
-                {
-                    ports.Add(new PortInfo(port));
-                }
-                catch(Exception)
-                {
-                    
-                    //TODO: Exceptions may occur if the port cannot be opened so log it in case this is the one we want
-                }
-            }
-            return ports;
-        }
-
     }
 }

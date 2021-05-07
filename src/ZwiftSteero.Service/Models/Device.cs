@@ -4,6 +4,8 @@ namespace ZwiftSteero.Service.Models
 {
     public class Device
     {
+        public Device(){}
+
         public DateTime Processed 
         {
             get

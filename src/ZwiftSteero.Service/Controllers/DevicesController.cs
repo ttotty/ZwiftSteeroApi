@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,8 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-using ZwiftSteero.BleUDevice;
+using ZwiftSteero.Application;
+using ZwiftSteero.Application.Abstractions;
 using ZwiftSteero.Service.Extensions;
+using ZwiftSteero.Service.Mappers;
 using ZwiftSteero.Service.Models;
 
 namespace ZwiftSteero.Service.Controllers
@@ -19,28 +20,33 @@ namespace ZwiftSteero.Service.Controllers
     {
 
         private readonly ILogger<DevicesController> _logger;
-        private readonly IPortInfo portInfo;
+        private readonly IPortApplication portApplication;
 
-        public DevicesController(ILogger<DevicesController> logger, IPortInfo portInfo)
+        public DevicesController(ILogger<DevicesController> logger, IPortApplication portApplication)
         {
             _logger = logger;
-            this.portInfo = portInfo;
+            this.portApplication = portApplication;
         }
 
         [HttpGet("{port}")]
         public ActionResult<Device> Get([FromRoute] string port)
         {
-            return Ok(new Device());
+            IPortInfo info = portApplication.Get(port);
+            if(info == null)
+            {
+                return NotFound();
+            } 
+            else
+            {
+                return Ok(portApplication.Get(port).Map());
+            }
         }
 
         [HttpGet]
         public async Task<ActionResult<Device>> GetList()
         {
-            IPortInfo[] ports = await portInfo.SearchForNewPortAsync();
-            IEnumerable<Device> devices = ports.Select(p => new Device()
-            {
-                Port = p.Port
-            });
+            IPortInfo[] ports = await portApplication.GetNewPortsAsync();
+            IEnumerable<Device> devices = ports.Select(p => p.Map());
 
             if(devices.Count() == 1)
             {

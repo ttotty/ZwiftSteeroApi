@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,7 +10,7 @@ using Microsoft.OpenApi.Models;
 
 using Hellang.Middleware.ProblemDetails;
 
-using ZwiftSteero.BleUDevice;
+using ZwiftSteero.Application;
 
 namespace ZwiftSteero.Service
 {
@@ -40,7 +39,8 @@ namespace ZwiftSteero.Service
                 });
 
             services.AddProblemDetails(ConfigureProblemDetails);
-            services.Add(new ServiceDescriptor(typeof(IPortInfo), typeof(PortInfo), ServiceLifetime.Transient));    // Scoped
+            services.Add(new ServiceDescriptor(typeof(IPortApplication), typeof(PortApplication), ServiceLifetime.Transient));    
+            
             
         
             services.AddSwaggerGen(c =>
