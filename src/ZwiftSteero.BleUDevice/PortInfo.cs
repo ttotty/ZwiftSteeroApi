@@ -1,14 +1,16 @@
-using System.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using RJCP.IO.Ports;
 
 namespace ZwiftSteero.BleUDevice
 {
     public class PortInfo: IPortInfo
     {
+        private const int DefaultSearchMilliseconds = 30000;
+
         public string Port{get;private set;}
         public string Description{get;set;}
 
@@ -56,14 +58,16 @@ namespace ZwiftSteero.BleUDevice
             FirstSeenAt = DateTime.Now;
         }
 
-        public async Task<IPortInfo[]> SearchForNewPortAsync(int timeout = 30000)
+        public async Task<IPortInfo[]> SearchForNewPortAsync(int timeout = DefaultSearchMilliseconds)
         {
             DateTime stopLookingAt = DateTime.Now.AddMilliseconds(timeout);
             List<PortInfo> originalPorts = ListPorts();
             var recentPorts = new Dictionary<string, PortInfo>();
-            while(stopLookingAt >= DateTime.Now 
-                && (recentPorts.Values.Any(port => port.IsNewDevice) == false) )
+            while(stopLookingAt >= DateTime.Now
+                  && (recentPorts.Values.Any(port => port.IsNewDevice) == false) )
             {
+                const int MillisecondsDelay = 500;
+
                 IEnumerable<PortInfo> justAdded = ListPorts().Where(existingPort => originalPorts.All(newPort => newPort.Port != existingPort.Port));              
                 DateTime lastSeenAt = DateTime.Now;
 
@@ -79,7 +83,8 @@ namespace ZwiftSteero.BleUDevice
                         recentPorts.Add(newPort.Port, newPort);
                     }
                 }
-                await Task.Delay(500);
+
+                await Task.Delay(MillisecondsDelay);
             }
             return recentPorts.Values.Where(port => port.IsNewDevice).ToArray();
         }

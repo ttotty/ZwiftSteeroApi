@@ -3,10 +3,14 @@ using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
+using Hellang.Middleware.ProblemDetails;
+
 using ZwiftSteero.BleUDevice;
 
 namespace ZwiftSteero.Service
@@ -24,6 +28,7 @@ namespace ZwiftSteero.Service
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             services
                 .AddControllers()
                 .AddJsonOptions(options =>
@@ -34,6 +39,7 @@ namespace ZwiftSteero.Service
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
+            services.AddProblemDetails(ConfigureProblemDetails);
             services.Add(new ServiceDescriptor(typeof(IPortInfo), typeof(PortInfo), ServiceLifetime.Transient));    // Scoped
             
         
@@ -46,14 +52,13 @@ namespace ZwiftSteero.Service
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseProblemDetails();
+            
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ZwiftSteero.Service v1"));
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -63,6 +68,10 @@ namespace ZwiftSteero.Service
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void ConfigureProblemDetails(ProblemDetailsOptions options)
+        {
         }
     }
 }

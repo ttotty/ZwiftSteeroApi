@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using ZwiftSteero.BleUDevice;
+using ZwiftSteero.Service.Extensions;
 using ZwiftSteero.Service.Models;
 
 namespace ZwiftSteero.Service.Controllers
@@ -32,28 +36,24 @@ namespace ZwiftSteero.Service.Controllers
         [HttpGet]
         public async Task<ActionResult<Device>> GetList()
         {
-            try
+            IPortInfo[] ports = await portInfo.SearchForNewPortAsync();
+            IEnumerable<Device> devices = ports.Select(p => new Device()
             {
-                IPortInfo[] ports = await portInfo.SearchForNewPortAsync();
-                IEnumerable<Device> devices = ports.Select(p => new Device()
-                {
-                    Port = p.Port
-                });
+                Port = p.Port
+            });
 
-                if(devices.Any())
-                {
-                    return Ok(devices);
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch (Exception ex)
+            if(devices.Count() == 1)
             {
-                string errorMessage = $"Error listing devices";
-                _logger.LogError(ex, errorMessage);
-                return StatusCode(503, errorMessage);
+                return Ok(devices);
+            }
+            else if(devices.Count() > 1)
+            {
+                //There can only be one! Unable to pick which is the correct new device that was just added
+                return this.StatusCode(HttpStatusCode.Conflict);
+            }
+            else
+            {
+                return NotFound();
             }
         }
     }
