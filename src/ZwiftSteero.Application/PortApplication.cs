@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using RJCP.IO.Ports;
 
 using ZwiftSteero.Application.Abstractions;
+using ZwiftSteero.Application.Mappers;
 using ZwiftSteero.BleUDevice;
 
 namespace ZwiftSteero.Application
@@ -22,11 +23,11 @@ namespace ZwiftSteero.Application
             this.logger = logger;
         }
 
-        public IPortInfo Get(string port)
+        public DeviceInfo Get(string port)
         {
             try
             {
-                return new PortInfo(port);
+                return new Device(port).Map();
             }
             catch(Exception ex)
             {
@@ -35,23 +36,25 @@ namespace ZwiftSteero.Application
             }
         }
 
-        public async Task<IPortInfo[]> GetNewPortsAsync(int timeout = DefaultSearchMilliseconds)
+        public async Task<DeviceInfo[]> GetNewPortsAsync(int timeout = DefaultSearchMilliseconds)
         {
             DateTime stopLookingAt = DateTime.UtcNow.AddMilliseconds(timeout);
-            List<PortInfo> originalPorts = ListPorts();
-            var recentPorts = new Dictionary<string, PortInfo>();
+            List<Device> originalPorts = ListPorts();
+            var recentPorts = new Dictionary<string, Device>();
             while(stopLookingAt >= DateTime.UtcNow
                   && (recentPorts.Values.Any(port => port.IsNew) == false) )
             {
                 const int MillisecondsDelay = 500;
 
-                IEnumerable<PortInfo> justAdded = ListPorts().Where(existingPort => originalPorts.All(newPort => newPort.Port != existingPort.Port));              
-                foreach(PortInfo newPort in justAdded)
+                IEnumerable<Device> justAdded = ListPorts().Where(existingPort => originalPorts.All(newPort => newPort.Port != existingPort.Port));
+                foreach(Device newPort in justAdded)
                 {
                     if(recentPorts.ContainsKey(newPort.Port))
                     {
-                        recentPorts[newPort.Port].Check();
-
+                        if(recentPorts[newPort.Port].CheckAvailability() == false)
+                        {
+                            recentPorts.Remove(newPort.Port);
+                        }
                     }
                     else
                     {
@@ -61,17 +64,17 @@ namespace ZwiftSteero.Application
 
                 await Task.Delay(MillisecondsDelay);
             }
-            return recentPorts.Values.Where(port => port.IsNew).ToArray();
+            return recentPorts.Values.Where(port => port.IsNew).Select(p=> p.Map()).ToArray();
         }
 
-        private List<PortInfo> ListPorts()
+        private List<Device> ListPorts()
         {
-            var ports = new List<PortInfo>();
-            foreach (string port in SerialPortStream.GetPortNames()) 
+            var ports = new List<Device>();
+            foreach (string port in SerialPortStream.GetPortNames())
             {
                 try
                 {
-                    ports.Add(new PortInfo(port));
+                    ports.Add(new Device(port));
                 }
                 catch(Exception)
                 {

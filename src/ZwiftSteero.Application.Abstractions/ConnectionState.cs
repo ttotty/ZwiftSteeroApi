@@ -1,6 +1,5 @@
-namespace ZwiftSteero.Service.Models
+namespace ZwiftSteero.Application.Abstractions
 {
-    //  [JsonConverter(typeof(JsonStringEnumConverter))] 
     public enum ConnectionState
     {
         None = 0,
@@ -9,5 +8,5 @@ namespace ZwiftSteero.Service.Models
         Failed,
         Stopping
     }
-    
+
 }

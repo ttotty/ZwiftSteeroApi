@@ -1,12 +1,14 @@
 using System;
 
-namespace ZwiftSteero.Service.Models
+namespace ZwiftSteero.Application.Abstractions
 {
-    public class Device
+    public class DeviceInfo
     {
-        public Device(){}
+        public DeviceInfo(){}
 
-        public DateTime Processed 
+        public string Port{ get; set;}
+
+        public DateTime Processed
         {
             get
             {
@@ -14,9 +16,7 @@ namespace ZwiftSteero.Service.Models
             }
         }
 
-        public string Port{ get; set;}
-
         public ConnectionState State{get; set;}
     }
-    
+
 }

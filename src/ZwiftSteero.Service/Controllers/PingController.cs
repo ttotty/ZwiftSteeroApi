@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Net;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -20,6 +21,8 @@ namespace ZwiftSteero.Service.Controllers
         }
 
         [HttpGet]
+        [Consumes( MediaTypeNames.Application.Json )]
+        [ProducesResponseType(typeof(Ping), (int)HttpStatusCode.OK ) ]
         public ActionResult<Ping> Get()
         {
             return Ok(new Ping(){Processed = DateTime.UtcNow});

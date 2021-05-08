@@ -7,5 +7,5 @@ namespace ZwiftSteero.Service.Models
 
         public DateTime Processed {get;set;}
     }
-    
+
 }

@@ -1,16 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
-using ZwiftSteero.Application;
 using ZwiftSteero.Application.Abstractions;
 using ZwiftSteero.Service.Extensions;
-using ZwiftSteero.Service.Mappers;
-using ZwiftSteero.Service.Models;
 
 namespace ZwiftSteero.Service.Controllers
 {
@@ -29,24 +26,30 @@ namespace ZwiftSteero.Service.Controllers
         }
 
         [HttpGet("{port}")]
-        public ActionResult<Device> Get([FromRoute] string port)
+        [Consumes( MediaTypeNames.Application.Json )]
+        [ProducesResponseType(typeof(DeviceInfo), (int)HttpStatusCode.OK ) ]
+        [ProducesResponseType((int)HttpStatusCode.NotFound ) ]
+        public ActionResult<DeviceInfo> Get([FromRoute] string port)
         {
-            IPortInfo info = portApplication.Get(port);
+            DeviceInfo info = portApplication.Get(port);
             if(info == null)
             {
                 return NotFound();
-            } 
+            }
             else
             {
-                return Ok(portApplication.Get(port).Map());
+                return Ok(portApplication.Get(port));
             }
         }
 
         [HttpGet]
-        public async Task<ActionResult<Device>> GetList()
+        [Consumes( MediaTypeNames.Application.Json )]
+        [ProducesResponseType(typeof(DeviceInfo), (int)HttpStatusCode.OK ) ]
+        [ProducesResponseType((int)HttpStatusCode.Conflict ) ]
+        [ProducesResponseType((int)HttpStatusCode.NotFound ) ]
+        public async Task<ActionResult<DeviceInfo>> Search()
         {
-            IPortInfo[] ports = await portApplication.GetNewPortsAsync();
-            IEnumerable<Device> devices = ports.Select(p => p.Map());
+            DeviceInfo[] devices = await portApplication.GetNewPortsAsync();
 
             if(devices.Count() == 1)
             {

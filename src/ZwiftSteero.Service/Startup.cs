@@ -1,6 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Hellang.Middleware.ProblemDetails;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-using Hellang.Middleware.ProblemDetails;
-
 using ZwiftSteero.Application;
+using ZwiftSteero.Application.Abstractions;
 
 namespace ZwiftSteero.Service
 {
@@ -23,37 +24,11 @@ namespace ZwiftSteero.Service
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-
-
-            services
-                .AddControllers()
-                .AddJsonOptions(options =>
-                {
-
-                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                    options.JsonSerializerOptions.WriteIndented = true;
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
-
-            services.AddProblemDetails(ConfigureProblemDetails);
-            services.Add(new ServiceDescriptor(typeof(IPortApplication), typeof(PortApplication), ServiceLifetime.Transient));    
-            
-            
-        
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZwiftSteero.Service", Version = "v1" });
-            });
-        }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseProblemDetails();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
@@ -68,6 +43,32 @@ namespace ZwiftSteero.Service
             {
                 endpoints.MapControllers();
             });
+        }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+
+            services
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.WriteIndented = true;
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+            services.AddProblemDetails(ConfigureProblemDetails);
+            ConfigureApplicationServices(services);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZwiftSteero.Service", Version = "v1" });
+            });
+        }
+
+        public void ConfigureApplicationServices(IServiceCollection services)
+        {
+            services.Add(new ServiceDescriptor(typeof(IPortApplication), typeof(PortApplication), ServiceLifetime.Transient));
         }
 
         private void ConfigureProblemDetails(ProblemDetailsOptions options)
