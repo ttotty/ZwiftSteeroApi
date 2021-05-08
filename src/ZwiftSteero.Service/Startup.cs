@@ -11,7 +11,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 using ZwiftSteero.Application;
-using ZwiftSteero.Application.Abstractions;
 
 namespace ZwiftSteero.Service
 {
@@ -58,17 +57,14 @@ namespace ZwiftSteero.Service
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-            services.AddProblemDetails(ConfigureProblemDetails);
-            ConfigureApplicationServices(services);
+            services
+                .AddProblemDetails(ConfigureProblemDetails)
+                .AddApplicationServices();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZwiftSteero.Service", Version = "v1" });
             });
-        }
-
-        public void ConfigureApplicationServices(IServiceCollection services)
-        {
-            services.Add(new ServiceDescriptor(typeof(IPortApplication), typeof(PortApplication), ServiceLifetime.Transient));
         }
 
         private void ConfigureProblemDetails(ProblemDetailsOptions options)

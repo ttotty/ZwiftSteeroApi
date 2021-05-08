@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
@@ -15,7 +14,7 @@ namespace ZwiftSteero.Service.Controllers
     [Route("[controller]")]
     public class DevicesController : ControllerBase
     {
-
+        private const string recentPortCookieKey = "recentPort";
         private readonly ILogger<DevicesController> _logger;
         private readonly IPortApplication portApplication;
 
@@ -23,6 +22,24 @@ namespace ZwiftSteero.Service.Controllers
         {
             _logger = logger;
             this.portApplication = portApplication;
+        }
+
+        [HttpPost()]
+        [Consumes( MediaTypeNames.Application.Json )]
+        [ProducesResponseType(typeof(DeviceInfo), (int)HttpStatusCode.OK ) ]
+        [ProducesResponseType((int)HttpStatusCode.NotFound ) ]
+        public async Task<ActionResult<DeviceInfo>> Connect()
+        {
+            string port = Request.Cookies[recentPortCookieKey]; 
+            DeviceInfo info = portApplication.Get(port);
+            if(info == null)
+            {
+                return NotFound();
+            }
+
+            await portApplication.ConnectAsync(port);            
+                
+            return Ok(info);
         }
 
         [HttpGet("{port}")]
@@ -38,7 +55,8 @@ namespace ZwiftSteero.Service.Controllers
             }
             else
             {
-                return Ok(portApplication.Get(port));
+                Response.Cookies.Append(recentPortCookieKey, info.Port);
+                return Ok(info);
             }
         }
 
@@ -53,7 +71,8 @@ namespace ZwiftSteero.Service.Controllers
 
             if(devices.Count() == 1)
             {
-                return Ok(devices);
+                Response.Cookies.Append(recentPortCookieKey, devices[0].Port);
+                return Ok(devices[0]);
             }
             else if(devices.Count() > 1)
             {

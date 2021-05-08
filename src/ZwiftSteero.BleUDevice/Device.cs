@@ -10,15 +10,17 @@ namespace ZwiftSteero.BleUDevice
 
         public Device(string portName)
         {
-            SerialPortStream port = new SerialPortStream(portName);
-            Port = portName;
-            BaudRate = port.BaudRate;
-            ByteSize = port.DataBits;
-            StopBits = Convert.ToInt32(port.StopBits);
-            Description = SerialPortStream.GetPortDescriptions().First(p => p.Port == portName).Description;
-            ReadTimeout = port.ReadTimeout;
-            WriteTimeout = port.WriteTimeout;
-            FirstSeenAt = DateTime.UtcNow;
+            using (SerialPortStream port = new SerialPortStream(portName))
+            {
+                Port = portName;
+                BaudRate = port.BaudRate;
+                ByteSize = port.DataBits;
+                StopBits = Convert.ToInt32(port.StopBits);
+                Description = SerialPortStream.GetPortDescriptions().First(p => p.Port == portName).Description;
+                ReadTimeout = port.ReadTimeout;
+                WriteTimeout = port.WriteTimeout;
+                FirstSeenAt = DateTime.UtcNow;
+            }
         }
 
         public int BaudRate { get; private set; }

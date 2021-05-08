@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 
-using RJCP.IO.Ports;
-
 using ZwiftSteero.Application.Abstractions;
 using ZwiftSteero.Application.Mappers;
 using ZwiftSteero.BleUDevice;
@@ -18,11 +16,24 @@ namespace ZwiftSteero.Application
         private const int DefaultSearchMilliseconds = 30000;
 
         private readonly ILogger<PortApplication> logger;
-        public PortApplication(ILogger<PortApplication> logger)
+        private readonly IPorts ports;
+        private readonly IChannel channel;
+        public PortApplication(ILogger<PortApplication> logger, 
+        IPorts ports,
+        IChannel channel)
         {
             this.logger = logger;
+            this.ports = ports;
+            this.channel = channel;
         }
 
+        public async Task<DeviceInfo> ConnectAsync(string port)
+        {
+
+
+
+            return await Task.Run(() => new DeviceInfo());  
+        }
         public DeviceInfo Get(string port)
         {
             try
@@ -39,14 +50,14 @@ namespace ZwiftSteero.Application
         public async Task<DeviceInfo[]> GetNewPortsAsync(int timeout = DefaultSearchMilliseconds)
         {
             DateTime stopLookingAt = DateTime.UtcNow.AddMilliseconds(timeout);
-            List<Device> originalPorts = ListPorts();
+            List<Device> originalPorts = ports.ActivePorts;
             var recentPorts = new Dictionary<string, Device>();
             while(stopLookingAt >= DateTime.UtcNow
                   && (recentPorts.Values.Any(port => port.IsNew) == false) )
             {
                 const int MillisecondsDelay = 500;
 
-                IEnumerable<Device> justAdded = ListPorts().Where(existingPort => originalPorts.All(newPort => newPort.Port != existingPort.Port));
+                IEnumerable<Device> justAdded = ports.ActivePorts.Where(existingPort => originalPorts.All(newPort => newPort.Port != existingPort.Port));
                 foreach(Device newPort in justAdded)
                 {
                     if(recentPorts.ContainsKey(newPort.Port))
@@ -66,23 +77,5 @@ namespace ZwiftSteero.Application
             }
             return recentPorts.Values.Where(port => port.IsNew).Select(p=> p.Map()).ToArray();
         }
-
-        private List<Device> ListPorts()
-        {
-            var ports = new List<Device>();
-            foreach (string port in SerialPortStream.GetPortNames())
-            {
-                try
-                {
-                    ports.Add(new Device(port));
-                }
-                catch(Exception)
-                {
-                    logger.LogWarning("Exceptions may occur if the port cannot be opened so log it in case this is the one we want");
-                }
-            }
-            return ports;
-        }
-
     }
 }

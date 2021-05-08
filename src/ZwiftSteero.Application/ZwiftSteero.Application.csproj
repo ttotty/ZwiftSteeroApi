@@ -3,11 +3,12 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="CIF.RJCP.SerialPortStream" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0"/>
+    <PackageReference Include="CIF.RJCP.SerialPortStream" Version="1.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ZwiftSteero.Application.Abstractions\ZwiftSteero.Application.Abstractions.csproj" />
-    <ProjectReference Include="..\ZwiftSteero.BleUDevice\ZwiftSteero.BleUDevice.csproj" />
+    <ProjectReference Include="..\ZwiftSteero.Application.Abstractions\ZwiftSteero.Application.Abstractions.csproj"/>
+    <ProjectReference Include="..\ZwiftSteero.BleUDevice\ZwiftSteero.BleUDevice.csproj"/>
   </ItemGroup>
 </Project>
