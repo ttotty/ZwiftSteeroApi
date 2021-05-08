@@ -1,6 +1,6 @@
 namespace ZwiftSteero.BleUDevice
 {
-    public interface IDevice
+    public interface ISerialCommunicationPort
     {
 
         int BaudRate { get; }

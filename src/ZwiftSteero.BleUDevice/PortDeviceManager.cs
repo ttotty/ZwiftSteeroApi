@@ -5,24 +5,24 @@ using RJCP.IO.Ports;
 
 namespace ZwiftSteero.BleUDevice
 {
-    public class Ports: IPorts
+    public class PortDeviceManager: IPortDeviceManager
     {
-        private readonly ILogger<Ports> logger;
+        private readonly ILogger<PortDeviceManager> logger;
 
-        public Ports(ILogger<Ports> logger)
+        public PortDeviceManager(ILogger<PortDeviceManager> logger)
         {
             this.logger = logger;
         }
         
-        public List<Device> ActivePorts{
+        public List<SerialCommunicationPort> ActivePorts{
             get
             {
-                var ports = new List<Device>();
+                var ports = new List<SerialCommunicationPort>();
                 foreach (string port in SerialPortStream.GetPortNames())
                 {
                     try
                     {
-                        ports.Add(new Device(port));
+                        ports.Add(new SerialCommunicationPort(port));
                     }
                     catch (Exception)
                     {

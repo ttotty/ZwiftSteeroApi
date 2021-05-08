@@ -5,10 +5,10 @@ using RJCP.IO.Ports;
 
 namespace ZwiftSteero.BleUDevice
 {
-    public class Device: IDevice
+    public class SerialCommunicationPort: ISerialCommunicationPort
     {
 
-        public Device(string portName)
+        public SerialCommunicationPort(string portName)
         {
             using (SerialPortStream port = new SerialPortStream(portName))
             {

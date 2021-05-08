@@ -12,38 +12,16 @@ namespace ZwiftSteero.Service.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DevicesController : ControllerBase
+    public class SerialPortsController : ControllerBase
     {
-        private const string recentPortCookieKey = "recentPort";
-        private readonly ILogger<DevicesController> _logger;
+        private readonly ILogger<SerialPortsController> _logger;
         private readonly IPortApplication portApplication;
-        private readonly IBleServiceApplication bleServiceApplication;
 
-        public DevicesController(ILogger<DevicesController> logger, 
-        IPortApplication portApplication,
-        IBleServiceApplication bleServiceApplication)
+        public SerialPortsController(ILogger<SerialPortsController> logger, 
+        IPortApplication portApplication)
         {
             _logger = logger;
             this.portApplication = portApplication;
-            this.bleServiceApplication = bleServiceApplication;
-        }
-
-        [HttpPost()]
-        [Consumes( MediaTypeNames.Application.Json )]
-        [ProducesResponseType(typeof(DeviceResponse), (int)HttpStatusCode.OK ) ]
-        [ProducesResponseType((int)HttpStatusCode.NotFound ) ]
-        public async Task<ActionResult<DeviceResponse>> Advertise()
-        {
-            string port = Request.Cookies[recentPortCookieKey]; 
-            DeviceResponse info = portApplication.Get(port);
-            if(info == null)
-            {
-                return NotFound();
-            }
-
-            await bleServiceApplication.AdvertiseAsync(port);            
-                
-            return Ok(info);
         }
 
         [HttpGet("{port}")]
@@ -59,7 +37,7 @@ namespace ZwiftSteero.Service.Controllers
             }
             else
             {
-                Response.Cookies.Append(recentPortCookieKey, info.Port);
+                Response.Cookies.Append(Cookies.CookieRecentPortKey, info.Port);
                 return Ok(info);
             }
         }
@@ -75,7 +53,7 @@ namespace ZwiftSteero.Service.Controllers
 
             if(devices.Count() == 1)
             {
-                Response.Cookies.Append(recentPortCookieKey, devices[0].Port);
+                Response.Cookies.Append(Cookies.CookieRecentPortKey, devices[0].Port);
                 return Ok(devices[0]);
             }
             else if(devices.Count() > 1)

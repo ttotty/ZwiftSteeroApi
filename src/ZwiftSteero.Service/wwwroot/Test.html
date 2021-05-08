@@ -16,7 +16,7 @@ function showResult(result)
 
 async function advertise() {
   clearResults('advertising.....')
-  fetch(`/devices/COM1`, {
+  fetch(`/Steerer/Advertisement`, {
       method:'post',
       headers:{ 'Accept':'application/json','Content-Type':'application/json' }
     })
@@ -26,7 +26,7 @@ async function advertise() {
   })
   .then((data) => {
     console.log(data)
-    showResult(`state= ${data.state}`)
+    showResult(`port= ${data.port}, state= ${data.state}`)
   })
   .catch((err) => {
     showStatus(err)
@@ -36,7 +36,7 @@ async function advertise() {
 
 async function searchDevice() {
   clearResults('searching.....')
-  fetch(`/devices/`, {
+  fetch(`/SerialPorts/`, {
       method:'get',
       headers:{ 'Accept':'application/json','Content-Type':'application/json' }
     })
@@ -55,7 +55,7 @@ async function searchDevice() {
 
 async function getDevice(port) {
   clearResults('getting device ...')
-  fetch(`/devices/${port}`, {
+  fetch(`/SerialPorts/${port}`, {
       method:'get',
       headers:{ 'Accept':'application/json','Content-Type':'application/json' }
     })
@@ -102,9 +102,9 @@ async function ping() {
     Result:<div id="result">-</div>
  
     <ul>
-    <li><button onclick="searchDevice()" id="searchdevice">Search for device</button></li>
-    <li><button onclick="getDevice('COM1')" id="getdevice">Get device by id: COM1</button></li>
-    <li><button onclick="advertise()" id="advertise">Advertise on device</button></li>
+    <li><button onclick="searchDevice()" id="searchdevice">Search for serial port as it is plugged in</button></li>
+    <li><button onclick="getDevice('COM1')" id="getdevice">Get serial port by id: COM1</button></li>
+    <li><button onclick="advertise()" id="advertise">Advertise steering</button></li>
     <li><button onclick="ping()" id="ping">Ping</button></li>  
     </ul>
   

@@ -2,6 +2,9 @@ using System;
 
 namespace ZwiftSteero.BleUDevice
 {
+    /// <summary>
+    /// AT channel on BleuIO USB adapter
+    /// </summary>
     public class ATChannel: IChannel
     {
         //ATDS: Turns auto discovery of services when connecting

@@ -16,9 +16,9 @@ namespace ZwiftSteero.Application
         private const int DefaultSearchMilliseconds = 30000;
 
         private readonly ILogger<PortApplication> logger;
-        private readonly IPorts ports;
+        private readonly IPortDeviceManager ports;
         public PortApplication(ILogger<PortApplication> logger, 
-        IPorts ports)
+        IPortDeviceManager ports)
         {
             this.logger = logger;
             this.ports = ports;
@@ -28,7 +28,7 @@ namespace ZwiftSteero.Application
         {
             try
             {
-                return new Device(port).Map();
+                return new SerialCommunicationPort(port).Map();
             }
             catch(Exception ex)
             {
@@ -40,15 +40,15 @@ namespace ZwiftSteero.Application
         public async Task<DeviceResponse[]> GetNewPortsAsync(int timeout = DefaultSearchMilliseconds)
         {
             DateTime stopLookingAt = DateTime.UtcNow.AddMilliseconds(timeout);
-            List<Device> originalPorts = ports.ActivePorts;
-            var recentPorts = new Dictionary<string, Device>();
+            List<SerialCommunicationPort> originalPorts = ports.ActivePorts;
+            var recentPorts = new Dictionary<string, SerialCommunicationPort>();
             while(stopLookingAt >= DateTime.UtcNow
                   && (recentPorts.Values.Any(port => port.IsNew) == false) )
             {
                 const int MillisecondsDelay = 500;
 
-                IEnumerable<Device> justAdded = ports.ActivePorts.Where(existingPort => originalPorts.All(newPort => newPort.Port != existingPort.Port));
-                foreach(Device newPort in justAdded)
+                IEnumerable<SerialCommunicationPort> justAdded = ports.ActivePorts.Where(existingPort => originalPorts.All(newPort => newPort.Port != existingPort.Port));
+                foreach(SerialCommunicationPort newPort in justAdded)
                 {
                     if(recentPorts.ContainsKey(newPort.Port))
                     {
