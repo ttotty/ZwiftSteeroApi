@@ -17,38 +17,42 @@ namespace ZwiftSteero.Service.Controllers
         private const string recentPortCookieKey = "recentPort";
         private readonly ILogger<DevicesController> _logger;
         private readonly IPortApplication portApplication;
+        private readonly IBleServiceApplication bleServiceApplication;
 
-        public DevicesController(ILogger<DevicesController> logger, IPortApplication portApplication)
+        public DevicesController(ILogger<DevicesController> logger, 
+        IPortApplication portApplication,
+        IBleServiceApplication bleServiceApplication)
         {
             _logger = logger;
             this.portApplication = portApplication;
+            this.bleServiceApplication = bleServiceApplication;
         }
 
         [HttpPost()]
         [Consumes( MediaTypeNames.Application.Json )]
-        [ProducesResponseType(typeof(DeviceInfo), (int)HttpStatusCode.OK ) ]
+        [ProducesResponseType(typeof(DeviceResponse), (int)HttpStatusCode.OK ) ]
         [ProducesResponseType((int)HttpStatusCode.NotFound ) ]
-        public async Task<ActionResult<DeviceInfo>> Advertise()
+        public async Task<ActionResult<DeviceResponse>> Advertise()
         {
             string port = Request.Cookies[recentPortCookieKey]; 
-            DeviceInfo info = portApplication.Get(port);
+            DeviceResponse info = portApplication.Get(port);
             if(info == null)
             {
                 return NotFound();
             }
 
-            await portApplication.AdvertiseAsync(port);            
+            await bleServiceApplication.AdvertiseAsync(port);            
                 
             return Ok(info);
         }
 
         [HttpGet("{port}")]
         [Consumes( MediaTypeNames.Application.Json )]
-        [ProducesResponseType(typeof(DeviceInfo), (int)HttpStatusCode.OK ) ]
+        [ProducesResponseType(typeof(DeviceResponse), (int)HttpStatusCode.OK ) ]
         [ProducesResponseType((int)HttpStatusCode.NotFound ) ]
-        public ActionResult<DeviceInfo> Get([FromRoute] string port)
+        public ActionResult<DeviceResponse> Get([FromRoute] string port)
         {
-            DeviceInfo info = portApplication.Get(port);
+            DeviceResponse info = portApplication.Get(port);
             if(info == null)
             {
                 return NotFound();
@@ -62,12 +66,12 @@ namespace ZwiftSteero.Service.Controllers
 
         [HttpGet]
         [Consumes( MediaTypeNames.Application.Json )]
-        [ProducesResponseType(typeof(DeviceInfo), (int)HttpStatusCode.OK ) ]
+        [ProducesResponseType(typeof(DeviceResponse), (int)HttpStatusCode.OK ) ]
         [ProducesResponseType((int)HttpStatusCode.Conflict ) ]
         [ProducesResponseType((int)HttpStatusCode.NotFound ) ]
-        public async Task<ActionResult<DeviceInfo>> Search()
+        public async Task<ActionResult<DeviceResponse>> Search()
         {
-            DeviceInfo[] devices = await portApplication.GetNewPortsAsync();
+            DeviceResponse[] devices = await portApplication.GetNewPortsAsync();
 
             if(devices.Count() == 1)
             {

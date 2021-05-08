@@ -2,9 +2,9 @@ using System;
 
 namespace ZwiftSteero.Application.Abstractions
 {
-    public class DeviceInfo
+    public class DeviceResponse
     {
-        public DeviceInfo(){}
+        public DeviceResponse(){}
 
         public string Port{ get; set;}
 

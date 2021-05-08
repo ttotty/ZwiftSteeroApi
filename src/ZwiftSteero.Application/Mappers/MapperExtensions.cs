@@ -6,9 +6,9 @@ namespace ZwiftSteero.Application.Mappers
 
     internal static class MapperExtensions
     {
-        public static DeviceInfo Map(this IDevice portInfo)
+        public static DeviceResponse Map(this IDevice portInfo)
         {
-            return new DeviceInfo()
+            return new DeviceResponse()
                 {
                     Port = portInfo.Port
                 };

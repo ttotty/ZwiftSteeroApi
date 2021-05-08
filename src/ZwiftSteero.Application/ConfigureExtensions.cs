@@ -4,15 +4,15 @@ using ZwiftSteero.BleUDevice;
 
 namespace ZwiftSteero.Application
 {
-    public static class ConfigureExtensions
+    public static class ServiceConfiguration
     {
         public static IServiceCollection  AddApplicationServices(this IServiceCollection services)
         {
-            services.AddSingleton(new ServiceDescriptor(typeof(IPortApplication), typeof(PortApplication)));
-            services.Add(new ServiceDescriptor(typeof(IPorts), typeof(Ports), ServiceLifetime.Transient));
-            services.Add(new ServiceDescriptor(typeof(IChannel), typeof(ATChannel), ServiceLifetime.Transient));
-           
-            
+            services.AddTransient<IPortApplication,PortApplication>();
+            services.AddTransient<IPorts,Ports>();
+            services.AddTransient<IChannel,ATChannel>();
+            services.AddSingleton<IBleServiceApplication, BleServiceApplication>();
+            services.AddTransient<IBleService, BleService>();
             return services;
         }
 

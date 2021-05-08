@@ -17,25 +17,14 @@ namespace ZwiftSteero.Application
 
         private readonly ILogger<PortApplication> logger;
         private readonly IPorts ports;
-        private readonly IChannel channel;
         public PortApplication(ILogger<PortApplication> logger, 
-        IPorts ports,
-        IChannel channel)
+        IPorts ports)
         {
             this.logger = logger;
             this.ports = ports;
-            this.channel = channel;
         }
 
-        public async Task<DeviceInfo> AdvertiseAsync(string port)
-        {
-            IDevice device = new Device(port);
-
-
-
-            return await Task.Run(() => new DeviceInfo());  
-        }
-        public DeviceInfo Get(string port)
+        public DeviceResponse Get(string port)
         {
             try
             {
@@ -48,7 +37,7 @@ namespace ZwiftSteero.Application
             }
         }
 
-        public async Task<DeviceInfo[]> GetNewPortsAsync(int timeout = DefaultSearchMilliseconds)
+        public async Task<DeviceResponse[]> GetNewPortsAsync(int timeout = DefaultSearchMilliseconds)
         {
             DateTime stopLookingAt = DateTime.UtcNow.AddMilliseconds(timeout);
             List<Device> originalPorts = ports.ActivePorts;
