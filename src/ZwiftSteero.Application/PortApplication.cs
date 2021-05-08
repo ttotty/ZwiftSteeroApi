@@ -27,8 +27,9 @@ namespace ZwiftSteero.Application
             this.channel = channel;
         }
 
-        public async Task<DeviceInfo> ConnectAsync(string port)
+        public async Task<DeviceInfo> AdvertiseAsync(string port)
         {
+            IDevice device = new Device(port);
 
 
 

@@ -8,9 +8,10 @@ namespace ZwiftSteero.Application
     {
         public static IServiceCollection  AddApplicationServices(this IServiceCollection services)
         {
-            services.Add(new ServiceDescriptor(typeof(IPortApplication), typeof(PortApplication), ServiceLifetime.Transient));
+            services.AddSingleton(new ServiceDescriptor(typeof(IPortApplication), typeof(PortApplication)));
             services.Add(new ServiceDescriptor(typeof(IPorts), typeof(Ports), ServiceLifetime.Transient));
             services.Add(new ServiceDescriptor(typeof(IChannel), typeof(ATChannel), ServiceLifetime.Transient));
+           
             
             return services;
         }

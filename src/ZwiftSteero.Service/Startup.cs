@@ -35,9 +35,8 @@ namespace ZwiftSteero.Service
             }
 
             app.UseRouting();
-
+            app.UseStaticFiles();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

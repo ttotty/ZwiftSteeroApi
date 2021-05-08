@@ -28,7 +28,7 @@ namespace ZwiftSteero.Service.Controllers
         [Consumes( MediaTypeNames.Application.Json )]
         [ProducesResponseType(typeof(DeviceInfo), (int)HttpStatusCode.OK ) ]
         [ProducesResponseType((int)HttpStatusCode.NotFound ) ]
-        public async Task<ActionResult<DeviceInfo>> Connect()
+        public async Task<ActionResult<DeviceInfo>> Advertise()
         {
             string port = Request.Cookies[recentPortCookieKey]; 
             DeviceInfo info = portApplication.Get(port);
@@ -37,7 +37,7 @@ namespace ZwiftSteero.Service.Controllers
                 return NotFound();
             }
 
-            await portApplication.ConnectAsync(port);            
+            await portApplication.AdvertiseAsync(port);            
                 
             return Ok(info);
         }

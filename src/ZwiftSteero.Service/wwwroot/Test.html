@@ -1,0 +1,112 @@
+<html><title>ZwiftSteero API Test Harness</title>
+<body>
+<script type='text/javascript'>
+function clearResults(notice) {
+  document.getElementById('result').textContent=notice
+  document.getElementById('status').textContent='-'
+}
+function showStatus(status)
+{
+  document.getElementById('status').textContent=status
+}
+function showResult(result)
+{
+  document.getElementById('result').textContent=result
+}
+
+async function advertise() {
+  clearResults('advertising.....')
+  fetch(`/devices/COM1`, {
+      method:'post',
+      headers:{ 'Accept':'application/json','Content-Type':'application/json' }
+    })
+  .then((response) => {
+    showStatus(response.status)
+    return response.json()
+  })
+  .then((data) => {
+    console.log(data)
+    showResult(`state= ${data.state}`)
+  })
+  .catch((err) => {
+    showStatus(err)
+  });
+}
+
+
+async function searchDevice() {
+  clearResults('searching.....')
+  fetch(`/devices/`, {
+      method:'get',
+      headers:{ 'Accept':'application/json','Content-Type':'application/json' }
+    })
+  .then((response) => {
+    showStatus(response.status)
+    return response.json()
+  })
+  .then((data) => {
+    console.log(data)
+    showResult(`port= ${data.port}`)
+  })
+  .catch((err) => {
+    showStatus(err)
+  });
+}
+
+async function getDevice(port) {
+  clearResults('getting device ...')
+  fetch(`/devices/${port}`, {
+      method:'get',
+      headers:{ 'Accept':'application/json','Content-Type':'application/json' }
+    })
+  .then((response) => {
+    showStatus(response.status)
+    return response.json()
+  })
+  .then((data) => {
+    console.log(data)
+    showResult(`port: ${data.port}`)
+  })
+  .catch((err) => {
+    showStatus(err)
+  });
+}
+
+async function ping() {
+  clearResults('pinging.....')
+  fetch('/ping', {
+      method:'get',
+      headers:{ 'Accept':'application/json','Content-Type':'application/json' }
+    })
+  .then((response) => {
+    showStatus(response.status)
+    return response.json()
+  })
+  .then((data) => {
+    console.log(data)
+    showResult(`processed: ${data.processed}`)
+  })
+  .catch((err) => {
+    showStatus(err)
+  });
+}
+
+</script>
+<style type="text/css">
+    html { background-color:#36454f; color:white;}
+    button { font-size:1em; margin:0.1em;}
+</style>
+
+  <section id="main">
+    Status:<div id="status">-</div>
+    Result:<div id="result">-</div>
+ 
+    <ul>
+    <li><button onclick="searchDevice()" id="searchdevice">1. Search for device</button></li>
+    <li><button onclick="getDevice('COM1')" id="getdevice">Get device by id: COM1</button></li>
+    <li><button onclick="advertise()" id="advertise">2. Advertise on device</button></li>
+    <li><button onclick="ping()" id="ping">Ping</button></li>  
+    </ul>
+  
+  </section>
+</body>
