@@ -1,5 +1,5 @@
 using ZwiftSteero.Application.Abstractions;
-using ZwiftSteero.BleUDevice;
+using ZwiftSteero.Ble.SerialCommunication;
 
 namespace ZwiftSteero.Application.Mappers
 {

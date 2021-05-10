@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ZwiftSteero.Application.Abstractions;
-using ZwiftSteero.BleUDevice;
+using ZwiftSteero.Ble;
 
 namespace ZwiftSteero.Application
 {
@@ -19,12 +19,9 @@ namespace ZwiftSteero.Application
 
         public async Task<bool> AdvertiseAsync(string port)
         {
-            //make sure port is still available
-            ISerialCommunicationPort device = new SerialCommunicationPort(port);
+            await service.AdvertiseAsync(port);
 
-
-
-            return await Task.Run(() => true);  
+            return true;  
         }
     }
 }

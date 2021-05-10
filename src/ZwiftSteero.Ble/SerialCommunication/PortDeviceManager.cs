@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using RJCP.IO.Ports;
 
-namespace ZwiftSteero.BleUDevice
+namespace ZwiftSteero.Ble.SerialCommunication
 {
     public class PortDeviceManager: IPortDeviceManager
     {
@@ -13,7 +13,7 @@ namespace ZwiftSteero.BleUDevice
         {
             this.logger = logger;
         }
-        
+
         public List<SerialCommunicationPort> ActivePorts{
             get
             {

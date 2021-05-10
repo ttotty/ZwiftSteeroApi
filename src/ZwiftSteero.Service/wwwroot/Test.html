@@ -1,7 +1,9 @@
-<html><title>ZwiftSteero API Test Harness</title>
+<html>
+<title>ZwiftSteero API Test Harness</title>
+
 <body>
-<script type='text/javascript'>
-function clearResults(notice) {
+  <script type="text/javascript">
+    function clearResults(notice) {
   document.getElementById('result').textContent=notice
   document.getElementById('status').textContent='-'
 }
@@ -90,23 +92,53 @@ async function ping() {
     showStatus(err)
   });
 }
+  </script>
 
-</script>
-<style type="text/css">
-    html { background-color:#36454f; color:white;}
+  <style type="text/css">
+    html { background-color:#36454f; color:#cca700;}
     button { font-size:1em; margin:0.1em;}
-</style>
+  </style>
 
   <section id="main">
-    Status:<div id="status">-</div>
-    Result:<div id="result">-</div>
- 
+    Status:
+
+    <div id="status">-</div>
+
+    Result:
+
+    <div id="result">-</div>
+
     <ul>
-    <li><button onclick="searchDevice()" id="searchdevice">Search for serial port as it is plugged in</button></li>
-    <li><button onclick="getDevice('COM1')" id="getdevice">Get serial port by id: COM1</button></li>
-    <li><button onclick="advertise()" id="advertise">Advertise steering</button></li>
-    <li><button onclick="ping()" id="ping">Ping</button></li>  
+      <li>
+        <button
+          onclick="searchDevice()"
+          id="searchdevice"
+        >
+          Search for serial port as it is plugged in
+        </button>
+      </li>
+
+      <li>
+        <button
+          onclick="getDevice('COM1')"
+          id="getdevice"
+        >Get serial port by id: COM1</button>
+      </li>
+
+      <li>
+        <button
+          onclick="advertise()"
+          id="advertise"
+        >Advertise steering</button>
+      </li>
+
+      <li>
+        <button
+          onclick="ping()"
+          id="ping"
+        >Ping</button>
+      </li>
     </ul>
-  
   </section>
 </body>
+</html>

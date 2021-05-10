@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using ZwiftSteero.Application.Abstractions;
 using ZwiftSteero.Application.Mappers;
-using ZwiftSteero.BleUDevice;
+using ZwiftSteero.Ble.SerialCommunication;
 
 namespace ZwiftSteero.Application
 {

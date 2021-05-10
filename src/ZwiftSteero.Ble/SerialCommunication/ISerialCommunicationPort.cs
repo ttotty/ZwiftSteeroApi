@@ -1,4 +1,4 @@
-namespace ZwiftSteero.BleUDevice
+namespace ZwiftSteero.Ble.SerialCommunication
 {
     public interface ISerialCommunicationPort
     {

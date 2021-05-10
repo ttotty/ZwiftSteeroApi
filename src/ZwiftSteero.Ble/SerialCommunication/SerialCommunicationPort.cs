@@ -3,7 +3,7 @@ using System.Linq;
 
 using RJCP.IO.Ports;
 
-namespace ZwiftSteero.BleUDevice
+namespace ZwiftSteero.Ble.SerialCommunication
 {
     public class SerialCommunicationPort: ISerialCommunicationPort
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ZwiftSteero.BleUDevice
+namespace ZwiftSteero.Ble.SerialCommunication
 {
     public interface IPortDeviceManager
     {
