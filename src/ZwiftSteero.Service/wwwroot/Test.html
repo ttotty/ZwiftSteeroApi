@@ -18,7 +18,7 @@ function showResult(result)
 
 async function advertise() {
   clearResults('advertising.....')
-  fetch(`/Steerer/Advertisement`, {
+  fetch(`/Steerer/Advertisement/COM1`, {
       method:'post',
       headers:{ 'Accept':'application/json','Content-Type':'application/json' }
     })

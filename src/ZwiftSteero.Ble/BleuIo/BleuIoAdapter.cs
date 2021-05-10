@@ -1,16 +1,22 @@
 using System;
+using System.Text;
+using Microsoft.Extensions.Logging;
 using RJCP.IO.Ports;
+using ZwiftSteero.Ble.Advertisement;
 
-namespace ZwiftSteero.Ble.SerialCommunication
+namespace ZwiftSteero.Ble.BleuIo
 {
-    public class BleuIoAdapter:IAtAdapter, IDisposable
+    public class BleuIoAdapter:IBleAdapter
     {
+
         private const int DefaultWriteTimeout = 2000;
+        private readonly ILogger<BleuIoAdapter> logger;
 
         private SerialPortStream port;
 
-        public BleuIoAdapter()
+        public BleuIoAdapter(ILogger<BleuIoAdapter> logger)
         {
+            this.logger = logger;
         }
 
         public bool Connect(string portName)
@@ -19,7 +25,10 @@ namespace ZwiftSteero.Ble.SerialCommunication
             {
                 port = new SerialPortStream(portName);
                 SetupPort(port);
-                port.Open();
+                if (port.IsOpen == false)
+                {
+                    port.Open();
+                }
             }
             else if (portName != port.PortName)
             {
@@ -37,7 +46,14 @@ namespace ZwiftSteero.Ble.SerialCommunication
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if(port != null)
+            {
+                if(port.IsOpen)
+                {
+                    port.Close();
+                }
+                port.Dispose();
+            }
         }
 
         //ATDS: Turns auto discovery of services when connecting
@@ -46,10 +62,20 @@ namespace ZwiftSteero.Ble.SerialCommunication
         //ATR: Trigger platform reset
         //**AT+ADVDATA: Sets or queries the advertising data
 
-        public void StartAdvertising()
+        public void StartAdvertising(IAdvertisement advertisement)
         {
-            port.Write($"AT+ADVSTART=");
+            Write("AT+ADVDATA=");
+            WriteHex(advertisement.UUID.ToString("N"));
+            WriteNewLine();
 
+            foreach (Characteristic characteristic in advertisement.Characteristics)
+            {
+                WriteHex(characteristic.ToString());
+                WriteHex(" ");
+            }
+            WriteNewLine();
+
+            WriteLine($"AT+ADVSTART"); //=(mode);(18);(intv_max);(time_ms)");
         }
 
         //AT+ADVSTOP: Stops advertising
@@ -62,8 +88,8 @@ namespace ZwiftSteero.Ble.SerialCommunication
         public void StartPeripheralMode()
         {
             //peripheral mode can't have any connections to switch over so disconnect first to make sure
-            port.WriteLine("AT+GAPDISCONNECTALL");
-            port.WriteLine("AT+PERIPHERAL");
+            WriteLine("AT+GAPDISCONNECTALL");
+            WriteLine("AT+PERIPHERAL");
         }
 
         //AT+SCANTARGET: Scan a target device. Displaying it's advertising and response data
@@ -79,6 +105,35 @@ namespace ZwiftSteero.Ble.SerialCommunication
             //port.DataBits = 8;
             //port.ReadTimeout = SerialPortStream.InfiniteTimeout;
             port.WriteTimeout = DefaultWriteTimeout;
+        }
+
+        private void Write(string text)
+        {
+            logger.LogInformation($"PORT.Write(\"{text}\")");
+
+            byte[] buffer = Encoding.UTF8.GetBytes(text + '\r');
+            port.Write(buffer, 0, buffer.Length);
+        }
+
+        private void WriteHex(string text)
+        {
+            string hex = BitConverter.ToString(Encoding.UTF8.GetBytes(text)).Replace('-',':');
+            byte[] buffer = Encoding.UTF8.GetBytes(hex);
+            logger.LogInformation($"PORT.WriteHex(\"{hex}\") text=\"{text}\"");
+
+            port.Write(buffer, 0, buffer.Length);
+
+        }
+        private void WriteLine(string text)
+        {
+            Write(text);
+            WriteNewLine();
+        }
+        private void WriteNewLine()
+        {
+            logger.LogInformation("PORT.NewLine");
+            Write('\r'.ToString());
+            port.Flush();
         }
     }
 }

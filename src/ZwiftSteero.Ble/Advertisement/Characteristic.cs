@@ -3,7 +3,7 @@ using System.Text;
 
 namespace ZwiftSteero.Ble.Advertisement
 {
-    internal class Characteristic
+    public class Characteristic
     {
         private readonly string value;
         public Characteristic(string value)
@@ -13,10 +13,7 @@ namespace ZwiftSteero.Ble.Advertisement
 
         public override string ToString()
         {
-            byte[] bytes = Encoding.Default.GetBytes(value);
-            var hexString = BitConverter.ToString(bytes);
-
-            return hexString.Replace('-', ':').ToString();
+            return value;
         }
     }
 }

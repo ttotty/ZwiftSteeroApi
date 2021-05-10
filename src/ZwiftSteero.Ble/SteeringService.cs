@@ -1,20 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using ZwiftSteero.Ble.Advertisement;
-using ZwiftSteero.Ble.SerialCommunication;
 
 namespace ZwiftSteero.Ble
 {
-    public class SteeringService: ISteeringService, IBleService
+    public class SteeringService: ISteeringService, IPeripheral, IDisposable
     {
-        private static readonly Guid SterzoUuid = Guid.Parse("347b0001-7635-408b-8918-8ff3949ce592");
-        private readonly IAtAdapter adapter;
-        public SteeringService(IAtAdapter adapter)
+        private readonly IBleAdapter adapter;
+        private readonly IAdvertisement steeroAdvertisement;
+        public SteeringService(IBleAdapter adapter, IAdvertisement steeroAdvertisement)
         {
             this.adapter = adapter;
+            this.steeroAdvertisement = steeroAdvertisement;
         }
-        public Guid UUID { get {return SterzoUuid; } }
+        public Guid UUID { get {return steeroAdvertisement.UUID; } }
 
         public async Task<bool> AdvertiseAsync(string port)
         {
@@ -24,22 +23,16 @@ namespace ZwiftSteero.Ble
             //adapter.RegisterService(service);
 
             adapter.StartPeripheralMode();
-            adapter.StartAdvertising();
-            
+            adapter.StartAdvertising(steeroAdvertisement);            
 
             return await Task.Run(() => true);  
         }
 
-        Characteristic[] IBleService.Characteristics
+        public void Dispose()
         {
-            get
+            if(adapter != null)
             {
-                List<Characteristic> characteristics = new List<Characteristic>();
-
-                characteristics.Add(new Characteristic(UUID.ToString()));
-
-
-                return characteristics.ToArray();
+                adapter.Dispose();
             }
         }
     }

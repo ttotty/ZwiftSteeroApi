@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using ZwiftSteero.Ble.Advertisement;
+using ZwiftSteero.Ble.BleuIo;
 using ZwiftSteero.Ble.SerialCommunication;
 
 namespace ZwiftSteero.Ble
@@ -8,8 +10,9 @@ namespace ZwiftSteero.Ble
         public static IServiceCollection  AddBleServices(this IServiceCollection services)
         {
             services.AddTransient<IPortDeviceManager, PortDeviceManager>();
-            services.AddTransient<IAtAdapter, BleuIoAdapter>();
+            services.AddTransient<IBleAdapter, BleuIoAdapter>();
             services.AddTransient<ISteeringService, SteeringService>();
+            services.AddTransient<IAdvertisement, SteeroAdvertisement>();
             return services;
         }
 

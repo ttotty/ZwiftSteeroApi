@@ -1,9 +1,8 @@
 using System;
-using ZwiftSteero.Ble.Advertisement;
 
-namespace ZwiftSteero.Ble
+namespace ZwiftSteero.Ble.Advertisement
 {
-    internal interface IBleService
+    public interface IAdvertisement
     {
         Guid UUID { get; }
 
