@@ -3,17 +3,18 @@ using System.Text;
 
 namespace ZwiftSteero.Ble.Advertisement
 {
-    public class Characteristic
+    public abstract class Characteristic
     {
-        private readonly string value;
-        public Characteristic(string value)
+        public Characteristic(string uuid): this(uuid, null) { }
+        public Characteristic(string uuid, string value)
         {
-            this.value = value;
+            UUID = uuid;
+            Value = value;
         }
+        public virtual string UUID { get; protected set; }
 
-        public override string ToString()
-        {
-            return value;
-        }
-    }
+        public virtual string Value { get; protected set; }
+
+        public virtual string Description { get; protected set; }
+}
 }

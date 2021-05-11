@@ -12,7 +12,6 @@ namespace ZwiftSteero.Ble
             services.AddTransient<IPortDeviceManager, PortDeviceManager>();
             services.AddTransient<IBleAdapter, BleuIoAdapter>();
             services.AddTransient<ISteeringService, SteeringService>();
-            services.AddTransient<IAdvertisement, SteeroAdvertisement>();
             return services;
         }
 

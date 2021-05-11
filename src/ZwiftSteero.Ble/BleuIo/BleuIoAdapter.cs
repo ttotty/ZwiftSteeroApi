@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using RJCP.IO.Ports;
@@ -62,18 +63,14 @@ namespace ZwiftSteero.Ble.BleuIo
         //ATR: Trigger platform reset
         //**AT+ADVDATA: Sets or queries the advertising data
 
-        public void StartAdvertising(IAdvertisement advertisement)
+        public void StartAdvertising(string serviceUUID, string serviceName, IEnumerable<Characteristic> characteristics)
         {
-            Write("AT+ADVDATA=");
-            WriteHex(advertisement.UUID.ToString("N"));
-            WriteNewLine();
+            WriteServiceAdvertisement(serviceUUID, serviceName);
 
-            foreach (Characteristic characteristic in advertisement.Characteristics)
+            foreach (Characteristic characteristic in characteristics)
             {
-                WriteHex(characteristic.ToString());
-                WriteHex(" ");
+                WriteCharacteristicAdvertisement(characteristic);
             }
-            WriteNewLine();
 
             WriteLine($"AT+ADVSTART"); //=(mode);(18);(intv_max);(time_ms)");
         }
@@ -99,10 +96,10 @@ namespace ZwiftSteero.Ble.BleuIo
 
         private static void SetupPort(SerialPortStream port)
         {
-            //port.BaudRate = 57600;
-            //port.Parity = Parity.None;
-            //port.StopBits = StopBits.One;
-            //port.DataBits = 8;
+            port.BaudRate = 57600;
+            port.Parity = Parity.None;
+            port.StopBits = StopBits.One;
+            port.DataBits = 8;
             //port.ReadTimeout = SerialPortStream.InfiniteTimeout;
             port.WriteTimeout = DefaultWriteTimeout;
         }
@@ -111,8 +108,20 @@ namespace ZwiftSteero.Ble.BleuIo
         {
             logger.LogInformation($"PORT.Write(\"{text}\")");
 
-            byte[] buffer = Encoding.UTF8.GetBytes(text + '\r');
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
             port.Write(buffer, 0, buffer.Length);
+        }
+
+        private void WriteCharacteristicAdvertisement(Characteristic characteristic)
+        {
+            Write("AT+ADVDATA=");
+            WriteHex(characteristic.UUID);
+            if(string.IsNullOrEmpty(characteristic.Value) == false)
+            {
+                Write(" ");
+                WriteHex(characteristic.Value);
+            }
+            WriteNewLine();
         }
 
         private void WriteHex(string text)
@@ -134,6 +143,15 @@ namespace ZwiftSteero.Ble.BleuIo
             logger.LogInformation("PORT.NewLine");
             Write('\r'.ToString());
             port.Flush();
+        }
+
+        private void WriteServiceAdvertisement(string serviceUUID, string name)
+        {
+            Write("AT+ADVDATA=");
+            WriteHex(serviceUUID);
+
+            //TODO: write name
+            WriteNewLine();
         }
     }
 }
