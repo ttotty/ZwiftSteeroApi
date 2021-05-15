@@ -10,7 +10,7 @@ namespace ZwiftSteero.Ble
         public static IServiceCollection  AddBleServices(this IServiceCollection services)
         {
             services.AddTransient<IPortDeviceManager, PortDeviceManager>();
-            services.AddTransient<IBleAdapter, BleuIoAdapter>();
+            services.AddTransient<IBluetootLeAdapter, BleuIoAdapter>();
             services.AddTransient<ISteeringService, SteeringService>();
             return services;
         }

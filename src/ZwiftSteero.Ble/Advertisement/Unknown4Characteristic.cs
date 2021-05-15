@@ -2,14 +2,21 @@ using System;
 
 namespace ZwiftSteero.Ble.Advertisement
 {
-    public class Unknown4Characteristic: Characteristic
+    public class Unknown4Characteristic : GattCharacteristic
     {
         private static readonly Guid uuid = Guid.Parse("347b0019-7635-408b-8918-8ff3949ce592");
-        private static readonly string description = "Unknown";
 
-        public Unknown4Characteristic() : base(uuid.ToString("N")) { }
+        private static readonly GattProperty properties = GattProperty.Read;
 
-        public override string Description => description;
+        private static readonly GattDescriptorPermission permissions = GattDescriptorPermission.Read;  
+
+        public Unknown4Characteristic(IService service) : base(
+                service,
+                uuid.ToString("N"),
+                properties,
+                permissions)
+        { }
+        public override string Description => "Unknown";
 
     }
 }

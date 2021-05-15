@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ZwiftSteero.Ble.Advertisement;
 
@@ -7,9 +8,9 @@ namespace ZwiftSteero.Ble
     public interface IService
     {
 
-        Characteristic[] Characteristics { get; }
+        IEnumerable<GattCharacteristic> Characteristics { get; }
         string ServiceName { get; }
-        string ServiceUUID { get; }
+        string Uuid { get; }
         Task<bool> AdvertiseAsync(string port);
     }
 }

@@ -7,7 +7,7 @@ using ZwiftSteero.Ble.Advertisement;
 
 namespace ZwiftSteero.Ble.BleuIo
 {
-    public class BleuIoAdapter:IBleAdapter
+    public class BleuIoAdapter:IBluetootLeAdapter
     {
 
         private const int DefaultWriteTimeout = 2000;
@@ -63,11 +63,16 @@ namespace ZwiftSteero.Ble.BleuIo
         //ATR: Trigger platform reset
         //**AT+ADVDATA: Sets or queries the advertising data
 
-        public void StartAdvertising(string serviceUUID, string serviceName, IEnumerable<Characteristic> characteristics)
+        public void StartAdvertising(string serviceUUID, string serviceName, IEnumerable<GattCharacteristic> characteristics)
         {
-            WriteServiceAdvertisement(serviceUUID, serviceName);
+            //TODO: service include_tx_power 
 
-            foreach (Characteristic characteristic in characteristics)
+
+            Write("AT+ADVDATA=");
+ 
+            WriteServiceDeclaration(serviceUUID, serviceName);
+
+            foreach (GattCharacteristic characteristic in characteristics)
             {
                 WriteCharacteristicAdvertisement(characteristic);
             }
@@ -112,16 +117,24 @@ namespace ZwiftSteero.Ble.BleuIo
             port.Write(buffer, 0, buffer.Length);
         }
 
-        private void WriteCharacteristicAdvertisement(Characteristic characteristic)
+        private void WriteCharacteristicAdvertisement(GattCharacteristic characteristic)
         {
             Write("AT+ADVDATA=");
-            WriteHex(characteristic.UUID);
-            if(string.IsNullOrEmpty(characteristic.Value) == false)
+            WriteHex(characteristic.Uuid);
+            //if(string.IsNullOrEmpty(characteristic.Value) == false)
             {
                 Write(" ");
-                WriteHex(characteristic.Value);
+            //    WriteHex(characteristic.Value);
             }
             WriteNewLine();
+        }
+
+        private void WriteGAP(GAPDataType dataType, string data)
+        {
+            //Byte 0: Length of data block, N, excluding length byte.
+            //Byte 1: GAP advertisement data type, see below.
+            //Byte 2-N: Data.
+            
         }
 
         private void WriteHex(string text)
@@ -145,9 +158,9 @@ namespace ZwiftSteero.Ble.BleuIo
             port.Flush();
         }
 
-        private void WriteServiceAdvertisement(string serviceUUID, string name)
+        private void WriteServiceDeclaration(string serviceUUID, string name)
         {
-            Write("AT+ADVDATA=");
+            
             WriteHex(serviceUUID);
 
             //TODO: write name
