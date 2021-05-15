@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ZwiftSteero.Ble
+namespace ZwiftSteero.Ble.Emulator
 {
     public interface ISteeringService: IService
     {

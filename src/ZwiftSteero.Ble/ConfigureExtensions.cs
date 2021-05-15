@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using ZwiftSteero.Ble.Advertisement;
 using ZwiftSteero.Ble.BleuIo;
+using ZwiftSteero.Ble.Emulator;
 using ZwiftSteero.Ble.SerialCommunication;
 
 namespace ZwiftSteero.Ble

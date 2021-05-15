@@ -1,6 +1,7 @@
 using System;
+using ZwiftSteero.Ble.Advertisement;
 
-namespace ZwiftSteero.Ble.Advertisement
+namespace ZwiftSteero.Ble.Emulator
 {
     public class RxCharacteristic: GattCharacteristic
     {

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ZwiftSteero.Application.Abstractions;
 using ZwiftSteero.Ble;
+using ZwiftSteero.Ble.Emulator;
 
 namespace ZwiftSteero.Application
 {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using ZwiftSteero.Ble.Advertisement;
 using ZwiftSteero.Ble.BleuIo;
 
-namespace ZwiftSteero.Ble
+namespace ZwiftSteero.Ble.Emulator
 {
     public class SteeringService: ISteeringService, IDisposable
     {

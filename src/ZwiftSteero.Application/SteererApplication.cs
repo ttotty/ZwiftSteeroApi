@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ZwiftSteero.Application.Abstractions;
 using ZwiftSteero.Ble;
+using ZwiftSteero.Ble.Emulator;
 
 namespace ZwiftSteero.Application
 {
